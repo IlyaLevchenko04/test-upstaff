@@ -52,17 +52,15 @@ const insertDiv = () => {
   div.style.backgroundColor = "#ffffff";
   div.style.flexGrow = "2";
   div.className = "products-list-item";
-
-  if (window.innerWidth >= 1200) {
-    div.style.width = "calc((100vw - 50px)/3)";
-  }
-
-  if (window.innerWidth >= 780) {
-    div.style.width = "calc((100vw - 35px)/2)";
-  }
+  div.style.display = "flex";
+  div.style.alignItems = "center";
 
   if (window.innerWidth < 780) {
     div.style.width = "calc((100vw - 20px))";
+  } else if (window.innerWidth >= 1200) {
+    div.style.width = "calc((100vw - 50px)/4)";
+  } else if (window.innerWidth >= 780) {
+    div.style.width = "calc((100vw - 35px)/2)";
   }
 
   const { children } = productsList;
