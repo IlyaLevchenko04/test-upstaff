@@ -1,0 +1,24 @@
+body {
+  padding: 10px;
+  margin: 0;
+}
+
+.products-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  width: 100%;
+  position: relative;
+}
+
+/* .products-list-item {
+  width: calc((100vw - 30px) / 4);
+  display: flex;
+}
+
+.products-item-photo {
+  width: 100%;
+} */
