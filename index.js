@@ -1,5 +1,3 @@
-const body = document.getElementsByTagName("body");
-const productsWrapper = document.querySelector(".products-list-wrapper");
 const productsList = document.querySelector(".products-list");
 const arr = [
   {
@@ -40,28 +38,45 @@ const arr = [
   },
 ];
 
+const useBreakpoints = () => {
+  const isDesktop = window.innerWidth >= 1200;
+  const isTablet = window.innerWidth >= 780;
+
+  return {
+    isDesktop,
+    isTablet,
+  };
+};
+
+const useCustomWidth = ({ px, elementsAmount = 0 }) => {
+  return `calc((100vw - ${px})${elementsAmount ? `/${elementsAmount}` : ""})`;
+};
+
 const insertDiv = () => {
+  const { isDesktop, isTablet } = useBreakpoints();
   const div = document.createElement("div");
+  const width = isDesktop
+    ? useCustomWidth({ px: "50px", elementsAmount: 4 })
+    : isTablet
+    ? useCustomWidth({ px: "35px", elementsAmount: 2 })
+    : useCustomWidth({ px: "20px" });
+
+  const styles = {
+    width,
+    textAlign: "center",
+    padding: "10px",
+    boxShadow: "0 0 5px 0 rgba(0, 0, 0, 0.5)",
+    borderRadius: "5px",
+    margin: "10px",
+    backgroundColor: "#fff",
+    flexGrow: "2",
+    display: "flex",
+    alignItems: "center",
+  };
   div.textContent =
     "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Corporis eveniet reiciendis doloribus minima eligendi aliquam. Officia, odit! Eum inventore molestiae facilis rerum voluptatibus provident iusto, corrupti dolore aliquam perspiciatis fugit?";
-  div.style.textAlign = "center";
-  div.style.padding = "10px";
-  div.style.boxShadow = "0px 0px 5px 0px rgba(0, 0, 0, 0.5)";
-  div.style.borderRadius = "5px";
-  div.style.margin = "10px";
-  div.style.backgroundColor = "#ffffff";
-  div.style.flexGrow = "2";
-  div.className = "products-list-item";
-  div.style.display = "flex";
-  div.style.alignItems = "center";
-
-  if (window.innerWidth < 780) {
-    div.style.width = "calc((100vw - 20px))";
-  } else if (window.innerWidth >= 1200) {
-    div.style.width = "calc((100vw - 50px)/4)";
-  } else if (window.innerWidth >= 780) {
-    div.style.width = "calc((100vw - 35px)/2)";
-  }
+  Object.assign(div.style, styles);
+  div.classList.add("products-list-item");
 
   const { children } = productsList;
 
@@ -70,55 +85,32 @@ const insertDiv = () => {
   parent.insertBefore(div, fourthChild.nextSibling);
 };
 
-const result = arr
-  .map(({ url, price }) => {
-    if (window.innerWidth >= 1200) {
-      return `<li class="products-list-item" style="width: calc((100vw - 65px) / 4); display:flex; flex-direction:column; text-align: center;">
-  <img src=${url} alt="product" class="products-item-photo" style="width: 100%;"/>
-  <span>${price}</span>
-  </li>`;
-    }
+const generateBlocks = () => {
+  const { isDesktop, isTablet } = useBreakpoints();
+  const width = isDesktop
+    ? useCustomWidth({ px: "65px", elementsAmount: 4 })
+    : isTablet
+    ? useCustomWidth({ px: "50px", elementsAmount: 3 })
+    : useCustomWidth({
+        px: "35px",
+        elementsAmount: 2,
+      });
 
-    if (window.innerWidth >= 780) {
-      return `<li class="products-list-item" style="width: calc((100vw - 50px) / 3); display:flex; flex-direction:column; text-align: center;">
-  <img src=${url} alt="product" class="products-item-photo" style="width: 100%;"/>
-  <span>${price}</span>
-  </li>`;
-    }
-
-    return `<li class="products-list-item" style="width: calc((100vw - 35px) / 2); display:flex; flex-direction:column; text-align: center;">
-    <img src=${url} alt="product" class="products-item-photo" style="width: 100%;"/>
-    <span>${price}</span>
-    </li>`;
-  })
-  .join("");
-
-productsList.innerHTML = result;
-
-insertDiv();
-
-window.addEventListener("resize", (e) => {
   productsList.innerHTML = arr
-    .map(({ url, price }) => {
-      if (window.innerWidth >= 1200) {
-        return `<li class="products-list-item" style="width: calc((100vw - 65px) / 4); display:flex; flex-direction:column; text-align: center;">
-    <img src=${url} alt="product" class="products-item-photo" style="width: 100%;"/>
-    <span>${price}</span>
-    </li>`;
-      }
-
-      if (window.innerWidth >= 780) {
-        return `<li class="products-list-item" style="width: calc((100vw - 50px) / 3); display:flex; flex-direction:column; text-align: center;">
-    <img src=${url} alt="product" class="products-item-photo" style="width: 100%;"/>
-    <span>${price}</span>
-    </li>`;
-      }
-
-      return `<li class="products-list-item" style="width: calc((100vw - 35px) / 2); display:flex; flex-direction:column; text-align: center;">
-    <img src=${url} alt="product" class="products-item-photo" style="width: 100%;"/>
-    <span>${price}</span>
-    </li>`;
-    })
+    .map(
+      ({
+        url,
+        price,
+      }) => `<li class="products-list-item" style="width: ${width}; display:flex; flex-direction:column; text-align: center;">
+      <img src=${url} alt="product" class="products-item-photo" style="width: 100%;"/>
+      <span>${price}</span>
+      </li>`
+    )
     .join("");
+
   insertDiv();
-});
+};
+
+generateBlocks();
+
+window.addEventListener("resize", () => generateBlocks());
